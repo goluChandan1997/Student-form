@@ -1,5 +1,5 @@
-"use client";
-import { useState } from "react";
+'use client';
+import { useState } from 'react';
 import {
   Upload,
   User,
@@ -11,7 +11,7 @@ import {
   Camera,
   AlertCircle,
   CheckCircle,
-} from "lucide-react";
+} from 'lucide-react';
 
 interface StudentFormData {
   name: string;
@@ -28,49 +28,42 @@ interface StudentFormData {
 
 export default function StudentForm() {
   const [formData, setFormData] = useState<StudentFormData>({
-    name: "",
-    fathersName: "",
-    email: "",
-    mobile: "",
-    age: "",
-    studyStartDate: "",
-    studyEndDate: "",
+    name: '',
+    fathersName: '',
+    email: '',
+    mobile: '',
+    age: '',
+    studyStartDate: '',
+    studyEndDate: '',
     picture: null,
-    feedback: "",
-    address: "",
+    feedback: '',
+    address: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "success" | "error"
-  >("idle");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [errorDetails, setErrorDetails] = useState<string[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     // Clear error messages when user starts typing
-    if (submitStatus === "error") {
-      setSubmitStatus("idle");
-      setErrorMessage("");
+    if (submitStatus === 'error') {
+      setSubmitStatus('idle');
+      setErrorMessage('');
       setErrorDetails([]);
     }
   };
 
-  const resizeAndCompressImage = (
-    file: File,
-    targetSizeKB: number = 500
-  ): Promise<File> => {
+  const resizeAndCompressImage = (file: File, targetSizeKB: number = 500): Promise<File> => {
     return new Promise((resolve, reject) => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
       const img = new Image();
 
       img.onload = () => {
@@ -108,7 +101,7 @@ export default function StudentForm() {
           canvas.toBlob(
             (blob) => {
               if (!blob) {
-                reject(new Error("Failed to compress image"));
+                reject(new Error('Failed to compress image'));
                 return;
               }
 
@@ -133,14 +126,14 @@ export default function StudentForm() {
               }
             },
             file.type,
-            quality
+            quality,
           );
         };
 
         tryCompress();
       };
 
-      img.onerror = () => reject(new Error("Failed to load image"));
+      img.onerror = () => reject(new Error('Failed to load image'));
       img.src = URL.createObjectURL(file);
     });
   };
@@ -149,16 +142,16 @@ export default function StudentForm() {
     const file = e.target.files?.[0];
     if (file) {
       // Validate file type first
-      if (!file.type.startsWith("image/")) {
-        setErrorMessage("Please select an image file");
-        setSubmitStatus("error");
+      if (!file.type.startsWith('image/')) {
+        setErrorMessage('Please select an image file');
+        setSubmitStatus('error');
         return;
       }
 
       try {
         // You might want to add a loading state to your type union, or handle this differently
         // setSubmitStatus("loading"); // Remove this line if you don't have "loading" in your union type
-        setErrorMessage("");
+        setErrorMessage('');
 
         // Resize and compress the image
         const compressedFile = await resizeAndCompressImage(file, 500);
@@ -168,19 +161,17 @@ export default function StudentForm() {
         setPreviewUrl(url);
 
         // Clear any previous errors
-        setSubmitStatus("idle");
-        setErrorMessage("");
+        setSubmitStatus('idle');
+        setErrorMessage('');
         setErrorDetails([]);
 
         // Optional: Log the final file size
         console.log(`Original size: ${(file.size / 1024).toFixed(2)}KB`);
-        console.log(
-          `Compressed size: ${(compressedFile.size / 1024).toFixed(2)}KB`
-        );
+        console.log(`Compressed size: ${(compressedFile.size / 1024).toFixed(2)}KB`);
       } catch (error) {
-        setErrorMessage("Failed to process image. Please try another file.");
-        setSubmitStatus("error");
-        console.error("Image compression error:", error);
+        setErrorMessage('Failed to process image. Please try another file.');
+        setSubmitStatus('error');
+        console.error('Image compression error:', error);
       }
     }
   };
@@ -217,35 +208,30 @@ export default function StudentForm() {
   const validateForm = () => {
     const errors: string[] = [];
 
-    if (!formData.name.trim()) errors.push("Name is required");
+    if (!formData.name.trim()) errors.push('Name is required');
     if (!formData.fathersName.trim()) errors.push("Father's name is required");
     // if (!formData.email.trim()) errors.push("Email is required");
-    if (!formData.mobile.trim()) errors.push("Mobile number is required");
-    if (!formData.age.trim()) errors.push("Age is required");
-    if (!formData.studyStartDate.trim())
-      errors.push("Study start date is required");
-    if (!formData.studyEndDate.trim())
-      errors.push("Study end date is required");
-    if (!formData.picture) errors.push("Picture is required");
-    if (!formData.feedback.trim()) errors.push("Feedback is required");
-    if (!formData.address.trim()) errors.push("Address is required");
+    if (!formData.mobile.trim()) errors.push('Mobile number is required');
+    if (!formData.age.trim()) errors.push('Age is required');
+    if (!formData.studyStartDate.trim()) errors.push('Study start date is required');
+    if (!formData.studyEndDate.trim()) errors.push('Study end date is required');
+    if (!formData.picture) errors.push('Picture is required');
+    if (!formData.feedback.trim()) errors.push('Feedback is required');
+    if (!formData.address.trim()) errors.push('Address is required');
 
     // Additional validations
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.push("Please enter a valid email address");
+      errors.push('Please enter a valid email address');
     }
 
-    if (
-      formData.mobile &&
-      !/^[0-9]{10}$/.test(formData.mobile.replace(/\s/g, ""))
-    ) {
-      errors.push("Mobile number should be 10 digits");
+    if (formData.mobile && !/^[0-9]{10}$/.test(formData.mobile.replace(/\s/g, ''))) {
+      errors.push('Mobile number should be 10 digits');
     }
 
     if (formData.age) {
       const age = parseInt(formData.age);
       if (isNaN(age) || age < 1 || age > 100) {
-        errors.push("Age should be between 1 and 100");
+        errors.push('Age should be between 1 and 100');
       }
     }
 
@@ -255,7 +241,7 @@ export default function StudentForm() {
       const endDate = new Date(formData.studyEndDate);
 
       if (startDate >= endDate) {
-        errors.push("Study end date must be after start date");
+        errors.push('Study end date must be after start date');
       }
     }
 
@@ -265,15 +251,15 @@ export default function StudentForm() {
   const handleSubmit = async (e: React.MouseEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus("idle");
-    setErrorMessage("");
+    setSubmitStatus('idle');
+    setErrorMessage('');
     setErrorDetails([]);
 
     // Client-side validation
     const validationErrors = validateForm();
     if (validationErrors.length > 0) {
-      setSubmitStatus("error");
-      setErrorMessage("Please fix the following errors:");
+      setSubmitStatus('error');
+      setErrorMessage('Please fix the following errors:');
       setErrorDetails(validationErrors);
       setIsSubmitting(false);
       return;
@@ -283,62 +269,57 @@ export default function StudentForm() {
       const formDataToSend = new FormData();
 
       // Debug: Log what we're sending
-      console.log("=== Frontend Debug ===");
-      console.log("Form data before sending:", formData);
+      console.log('=== Frontend Debug ===');
+      console.log('Form data before sending:', formData);
 
       // Append all form fields
       Object.entries(formData).forEach(([key, value]) => {
-        if (key === "picture" && value instanceof File) {
+        if (key === 'picture' && value instanceof File) {
           formDataToSend.append(key, value);
           console.log(`Appending ${key}:`, value.name, value.type, value.size);
-        } else if (typeof value === "string" && value.trim() !== "") {
+        } else if (typeof value === 'string' && value.trim() !== '') {
           formDataToSend.append(key, value.trim());
           console.log(`Appending ${key}:`, value.trim());
         }
       });
 
       // Debug: Log FormData contents
-      console.log("FormData contents:");
+      console.log('FormData contents:');
       for (let [key, value] of formDataToSend.entries()) {
         console.log(key, value);
       }
-      console.log("formDataToSend", formDataToSend);
-      const response = await fetch(
-        "https://be-student-form.onrender.com/api/students",
-        {
-          method: "POST",
-          // credentials: "include",
-          body: formDataToSend,
-        }
-      );
+      console.log('formDataToSend', formDataToSend);
+      const response = await fetch('https://be-student-form.onrender.com/api/students', {
+        method: 'POST',
+        // credentials: "include",
+        body: formDataToSend,
+      });
 
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
 
       const responseData = await response.json();
-      console.log("Response data:", responseData);
+      console.log('Response data:', responseData);
 
       if (response.ok) {
-        setSubmitStatus("success");
+        setSubmitStatus('success');
         // Reset form
         setFormData({
-          name: "",
-          fathersName: "",
-          email: "",
-          mobile: "",
-          age: "",
-          studyStartDate: "",
-          studyEndDate: "",
+          name: '',
+          fathersName: '',
+          email: '',
+          mobile: '',
+          age: '',
+          studyStartDate: '',
+          studyEndDate: '',
           picture: null,
-          feedback: "",
-          address: "",
+          feedback: '',
+          address: '',
         });
         setPreviewUrl(null);
       } else {
-        setSubmitStatus("error");
-        setErrorMessage(
-          responseData.error || "An error occurred during registration"
-        );
+        setSubmitStatus('error');
+        setErrorMessage(responseData.error || 'An error occurred during registration');
 
         if (responseData.details) {
           if (Array.isArray(responseData.details)) {
@@ -352,18 +333,13 @@ export default function StudentForm() {
           const missingFieldNames = Object.entries(responseData.missingFields)
             .filter(([_, missing]) => missing)
             .map(([field, _]) => field);
-          setErrorDetails((prev) => [
-            ...prev,
-            `Missing fields: ${missingFieldNames.join(", ")}`,
-          ]);
+          setErrorDetails((prev) => [...prev, `Missing fields: ${missingFieldNames.join(', ')}`]);
         }
       }
     } catch (error) {
-      console.error("Network error:", error);
-      setSubmitStatus("error");
-      setErrorMessage(
-        "Network error. Please check your connection and try again."
-      );
+      console.error('Network error:', error);
+      setSubmitStatus('error');
+      setErrorMessage('Network error. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -374,19 +350,39 @@ export default function StudentForm() {
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-12 text-center">
-            <h1 className="text-4xl font-bold text-white mb-2">
-              Student Registration
-            </h1>
-            <p className="text-blue-100 text-lg">
-              Fill out the form below to register
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 bg-gradient-to-r from-blue-600 to-purple-600 px-4 md:px-8 py-6 md:py-8">
+            {/* Profile Section */}
+            <div className="col-span-1 md:col-span-3 flex flex-col items-center md:items-start">
+              <img
+                className="rounded-full mb-2"
+                src="/images/rahul-profile.jpeg"
+                alt="Rahul's Profile"
+                width={110}
+                height={110}
+              />
+              <p className="text-blue-100 text-base md:text-lg font-bold text-center md:text-left">
+                Rahul Singh
+              </p>
+            </div>
+
+            {/* Content Section */}
+            <div className="col-span-1 md:col-span-9 text-center">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 leading-tight">
+                APOGEE EDUCATION CENTRE
+              </h1>
+              <h1 className="text-xl sm:text-2xl md:text-4xl font-bold text-white mb-2 md:mb-4 leading-tight">
+                Student Registration
+              </h1>
+              <p className="text-blue-100 text-sm sm:text-base md:text-lg">
+                Fill out the form below to register
+              </p>
+            </div>
           </div>
 
           {/* Form */}
           <div className="p-8 space-y-8">
             {/* Error Message */}
-            {submitStatus === "error" && (
+            {submitStatus === 'error' && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                 <div className="flex items-center text-red-800 mb-2">
                   <AlertCircle className="w-5 h-5 mr-2" />
@@ -403,13 +399,11 @@ export default function StudentForm() {
             )}
 
             {/* Success Message */}
-            {submitStatus === "success" && (
+            {submitStatus === 'success' && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <div className="flex items-center text-green-800">
                   <CheckCircle className="w-5 h-5 mr-2" />
-                  <span className="font-medium">
-                    Registration submitted successfully!
-                  </span>
+                  <span className="font-medium">Registration submitted successfully!</span>
                 </div>
               </div>
             )}
@@ -549,31 +543,22 @@ export default function StudentForm() {
               {formData.studyStartDate && formData.studyEndDate && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <div className="text-blue-800 text-sm">
-                    <strong>Study Duration:</strong>{" "}
+                    <strong>Study Duration:</strong>{' '}
                     {(() => {
                       const start = new Date(formData.studyStartDate);
                       const end = new Date(formData.studyEndDate);
-                      const diffTime = Math.abs(
-                        end.getTime() - start.getTime()
-                      );
-                      const diffDays = Math.ceil(
-                        diffTime / (1000 * 60 * 60 * 24)
-                      );
+                      const diffTime = Math.abs(end.getTime() - start.getTime());
+                      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                       const years = Math.floor(diffDays / 365);
                       const months = Math.floor((diffDays % 365) / 30);
                       const days = diffDays % 30;
 
                       let duration = [];
-                      if (years > 0)
-                        duration.push(`${years} year${years > 1 ? "s" : ""}`);
-                      if (months > 0)
-                        duration.push(
-                          `${months} month${months > 1 ? "s" : ""}`
-                        );
-                      if (days > 0)
-                        duration.push(`${days} day${days > 1 ? "s" : ""}`);
+                      if (years > 0) duration.push(`${years} year${years > 1 ? 's' : ''}`);
+                      if (months > 0) duration.push(`${months} month${months > 1 ? 's' : ''}`);
+                      if (days > 0) duration.push(`${days} day${days > 1 ? 's' : ''}`);
 
-                      return duration.join(", ") || "0 days";
+                      return duration.join(', ') || '0 days';
                     })()}
                   </div>
                 </div>
@@ -604,12 +589,9 @@ export default function StudentForm() {
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <Upload className="w-10 h-10 mb-3 text-gray-400" />
                         <p className="mb-2 text-sm text-gray-500">
-                          <span className="font-semibold">Click to upload</span>{" "}
-                          or drag and drop
+                          <span className="font-semibold">Click to upload</span> or drag and drop
                         </p>
-                        <p className="text-xs text-gray-500">
-                          PNG, JPG or JPEG (MAX. 5MB)
-                        </p>
+                        <p className="text-xs text-gray-500">PNG, JPG or JPEG (MAX. 5MB)</p>
                       </div>
                     )}
                     <input
@@ -672,7 +654,7 @@ export default function StudentForm() {
                 disabled={isSubmitting}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-purple-700 focus:ring-4 focus:ring-blue-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Submitting..." : "Submit Registration"}
+                {isSubmitting ? 'Submitting...' : 'Submit Registration'}
               </button>
             </div>
           </div>
