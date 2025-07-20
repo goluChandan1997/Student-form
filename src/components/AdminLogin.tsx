@@ -48,6 +48,7 @@ export default function AdminLogin() {
       }
     } catch (error) {
       setError("Network error. Please try again.");
+      console.log("error", error);
     } finally {
       setIsLoading(false);
     }
